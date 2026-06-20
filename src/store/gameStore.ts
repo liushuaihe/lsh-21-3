@@ -195,6 +195,10 @@ export const useGameStore = create<GameStore>()(
             result = { success: false, error: '玩家不存在或已死亡' }
             return
           }
+          if (cmd.cost < 1) {
+            result = { success: false, error: '消耗 AP 不能小于 1' }
+            return
+          }
           if (player.actionPoints < cmd.cost) {
             result = { success: false, error: `AP不足！需要 ${cmd.cost} AP，当前剩余 ${player.actionPoints} AP` }
             return
@@ -212,7 +216,8 @@ export const useGameStore = create<GameStore>()(
           }
 
           player.actionPoints -= cmd.cost
-          const priority = cmd.cost * 1000 + player.agility * 10 + state.commands.length
+          const playerCmdCount = state.commands.filter((c) => c.playerId === cmd.playerId).length
+          const priority = cmd.cost * 1000 + player.agility * 10 + playerCmdCount
           state.commands.push({
             ...cmd,
             id: genId(),

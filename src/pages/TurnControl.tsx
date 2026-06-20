@@ -73,8 +73,8 @@ export default function TurnControl() {
 
   const estimatedPriority = useMemo(() => {
     if (!selectedPlayer) return 0
-    return cost * 1000 + selectedPlayer.agility * 10 + commands.length
-  }, [selectedPlayer, cost, commands.length])
+    return cost * 1000 + selectedPlayer.agility * 10 + playerCommands.length
+  }, [selectedPlayer, cost, playerCommands.length])
 
   const validationError = useMemo(() => {
     if (!selectedPlayer) return ''
@@ -263,6 +263,7 @@ export default function TurnControl() {
                   value={selectedPlayerId}
                   onChange={(e) => {
                     setSelectedPlayerId(e.target.value)
+                    setTargetId('')
                     setErrorMessage('')
                   }}
                   className="input-gothic w-full rounded text-sm"
@@ -295,7 +296,8 @@ export default function TurnControl() {
                   max={selectedPlayer?.maxActionPoints ?? 10}
                   value={cost}
                   onChange={(e) => {
-                    setCost(Number(e.target.value))
+                    const v = Number(e.target.value)
+                    setCost(v < 1 ? 1 : v)
                     setErrorMessage('')
                   }}
                   className="input-gothic w-full rounded text-sm tabular-nums"
